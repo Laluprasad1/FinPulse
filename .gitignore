@@ -1,0 +1,17 @@
+# Environment files
+.env
+finpulse/backend/.env
+finpulse/frontend/.env
+
+# Node / React artifacts
+node_modules/
+finpulse/backend/node_modules/
+finpulse/frontend/node_modules/
+build/
+finpulse/frontend/build/
+
+# OS and logs
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
