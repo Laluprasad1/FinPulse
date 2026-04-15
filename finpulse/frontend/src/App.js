@@ -237,7 +237,7 @@ const App = () => {
       cancelled = true;
       window.clearInterval(intervalId);
     };
-  }, [authMode, googleClientId, isGoogleClientConfigured]);
+  }, [authMode, googleClientId, isGoogleClientConfigured, initGoogleAuth]);
 
   const handleSignOut = () => {
     setToken('');
