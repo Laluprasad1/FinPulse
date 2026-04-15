@@ -52,14 +52,19 @@ app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
   res.status(204).end();
 });
 
-mongoose
-  .connect(mongoUri)
-  .then(() => {
+const connectToMongo = async () => {
+  if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
+    return;
+  }
+  try {
+    await mongoose.connect(mongoUri);
     console.log('Connected to MongoDB');
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error('MongoDB connection error:', error.message);
-  });
+  }
+};
+
+connectToMongo();
 
 const toMonthKey = (date) => {
   const year = date.getFullYear();
@@ -1822,6 +1827,10 @@ app.post('/api/recurring/apply', requireAuth, async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Backend server running on http://localhost:${port}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Backend server running on http://localhost:${port}`);
+  });
+}
+
+module.exports = app;
