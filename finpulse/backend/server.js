@@ -32,6 +32,7 @@ const googleClientIds = String(
 const googleClient = googleClientIds.length ? new OAuth2Client() : null;
 const configuredAppUrl = String(process.env.APP_URL || process.env.FRONTEND_URL || '').trim();
 const frontendPort = Number.parseInt(process.env.FRONTEND_PORT || '3000', 10) || 3000;
+let mongoConnectPromise = null;
 
 app.use(cors());
 app.use(express.json());
@@ -56,15 +57,35 @@ const connectToMongo = async () => {
   if (mongoose.connection.readyState === 1 || mongoose.connection.readyState === 2) {
     return;
   }
+  if (mongoConnectPromise) {
+    return mongoConnectPromise;
+  }
   try {
-    await mongoose.connect(mongoUri);
+    mongoConnectPromise = mongoose.connect(mongoUri, {
+      serverSelectionTimeoutMS: 10000,
+    });
+    await mongoConnectPromise;
     console.log('Connected to MongoDB');
   } catch (error) {
     console.error('MongoDB connection error:', error.message);
+    throw error;
+  } finally {
+    mongoConnectPromise = null;
   }
 };
 
-connectToMongo();
+const ensureDbConnection = async (req, res, next) => {
+  try {
+    await connectToMongo();
+    return next();
+  } catch (error) {
+    return res.status(503).json({
+      message: 'Database unavailable. Check MONGO_URI and Atlas network access.',
+    });
+  }
+};
+
+app.use(ensureDbConnection);
 
 const toMonthKey = (date) => {
   const year = date.getFullYear();
