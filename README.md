@@ -1,7 +1,9 @@
 # FinPulse - Personal Finance Tracker
 
 FinPulse is a full-stack web application for personal finance management with collaborative trip expense sharing.
+
 [Live Site](https://finpulse-lalu.vercel.app)
+
 It includes:
 - Personal income and expense tracking
 - Google login and OTP-based verification
