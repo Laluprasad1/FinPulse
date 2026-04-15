@@ -1,258 +1,223 @@
-# FinPulse - Personal Finance Tracker with Dual Authentication
+# FinPulse - Personal Finance Tracker
 
-## 🎯 What's Done
+FinPulse is a full-stack web application for personal finance management with collaborative trip expense sharing.
 
-A complete **dual authentication system** is now implemented:
+It includes:
+- Personal income and expense tracking
+- Google login and OTP-based verification
+- Budget planning and budget-overrun alerts
+- Recurring transactions automation
+- Analytics (monthly, weekly, category, forecast)
+- CSV import and export
+- Multi-member trip expense sharing with invite links and settlement
 
-### ✅ Email + Password Authentication
-- User registers with email/password
-- Gets OTP sent to their email
-- Verifies OTP to confirm email
-- Then can login with email + password
-
-### ✅ Google OAuth Authentication  
-- User clicks "Continue with Google"
-- Selects Google account
-- Auto-creates account (if new)
-- Instantly logged in
-
----
-
-## 🚀 Quick Start (5 minutes)
-
-### 1. Get Gmail App Password
-- Go to https://myaccount.google.com/security
-- Enable 2-Step Verification
-- Go to App passwords
-- Create password (you'll get 16-char string)
-- Copy it
-
-### 2. Fill Environment Variables
-
-**backend/.env:**
-```
-GMAIL_USER=your@gmail.com
-GMAIL_APP_PASSWORD=xxxx xxxx xxxx xxxx
-JWT_SECRET=anything-you-want
-```
-
-### 3. Install & Run
-
-```bash
-# Terminal 1: Backend
-cd personal-finance-tracker/backend
-npm install
-node server.js
-
-# Terminal 2: Frontend  
-cd personal-finance-tracker/frontend
-npm install
-npm start
-
-# Terminal 3: MongoDB (if not running)
-mongod
-```
-
-### 4. Test
-- Open http://localhost:3000
-- Register → Check email for OTP → Verify → Login ✅
-
-**That's it!** The authentication system is ready to use.
-
----
-
-## 📚 Documentation
-
-All setup instructions and technical details are in the markdown files:
-
-**Start with one of these:**
-- 🚀 [QUICK_START.md](QUICK_START.md) - Quick reference (3 min read)
-- 📖 [COMPLETE_SETUP_INSTRUCTIONS.md](COMPLETE_SETUP_INSTRUCTIONS.md) - Detailed guide (15 min read)
-- 📚 [README_DOCUMENTATION_INDEX.md](README_DOCUMENTATION_INDEX.md) - Full documentation index
-
-**For understanding the flows:**
-- 🎨 [AUTH_FLOWS_VISUAL.md](AUTH_FLOWS_VISUAL.md) - Visual diagrams
-- 📊 [VISUAL_SUMMARY.md](VISUAL_SUMMARY.md) - Screen mockups & data flow
-- 🔧 [AUTH_IMPLEMENTATION_SUMMARY.md](AUTH_IMPLEMENTATION_SUMMARY.md) - Technical details
-
-**For implementation details:**
-- ✅ [WHAT_WAS_DONE.md](WHAT_WAS_DONE.md) - Code changes summary
-- 🎯 [IMPLEMENTATION_COMPLETE.md](IMPLEMENTATION_COMPLETE.md) - Everything built
-
----
-
-## 🔐 Features
-
-### Email + Password
-- ✅ User registration with name/email/password
-- ✅ OTP verification sent to email
-- ✅ Account verification required for login
-- ✅ Secure password login
-- ✅ Resend OTP if expired
-- ✅ bcryptjs password hashing
-
-### Google OAuth
-- ✅ One-click Google sign-in
-- ✅ Auto-creates account
-- ✅ Profile picture import
-- ✅ Server-side token verification
-- ✅ Works in development mode
-
-### Security
-- ✅ Email verification before password use
-- ✅ OTP codes valid 10 minutes
-- ✅ JWT tokens valid 7 days
-- ✅ Password hashing (bcryptjs, 10 rounds)
-- ✅ User data isolation per account
-
----
-
-## 📁 File Changes
-
-### Backend
-- `server.js` - Updated auth endpoints
-- `models/User.js` - Added isVerified field
-- `package.json` - Added google-auth-library
-- `.env` & `.env.example` - New config files
-- `.gitignore` - Ignore .env files
+## Tech Stack
 
 ### Frontend
-- `src/App.js` - Updated auth flow & Google handler
-- `public/index.html` - Added Google Sign-In script
-- `.env` & `.env.example` - New config files
+- React 18 (Create React App)
+- Axios for API calls
+- Recharts for analytics charts
 
----
+### Backend
+- Node.js + Express
+- MongoDB + Mongoose
+- JWT authentication
+- Google Sign-In token verification (google-auth-library)
+- OTP email delivery with Nodemailer (Gmail App Password)
 
-## 🧪 Testing
+### Deployment
+- Frontend: Vercel (static React build)
+- Backend: Vercel serverless functions
+- Database: MongoDB Atlas
 
-**Email + Password Flow:**
-1. Click "Register"
-2. Enter name, email, password
-3. Click "Create account"
-4. Check email for OTP
-5. Enter OTP code
-6. Click "Verify OTP"
-7. Login with email + password
+## Project Structure
 
-**Google OAuth Flow:**
-1. Click "Continue with Google"
-2. Select Google account
-3. Instantly logged in ✅
-
----
-
-## ⚙️ Configuration
-
-### Required (for Email OTP to work)
-```
-backend/.env:
-- GMAIL_USER=your@gmail.com
-- GMAIL_APP_PASSWORD=16-char-password-from-google
+```text
+finpulse/
+  backend/
+    api/index.js
+    models/
+    server.js
+    vercel.json
+  frontend/
+    public/
+    src/
+    vercel.json
 ```
 
-### Optional (for Google sign-in button)
+## Main Features
+
+### Authentication
+- Register with email and password
+- OTP verification flow (email-based)
+- Login with email/password
+- Login with Google Sign-In
+- JWT-based session management
+
+### Finance Management
+- Add, edit, and delete transactions
+- Income/expense categorization
+- Date range and tag filtering
+- Dashboard totals and recent activity
+- Budget creation and summary tracking
+- Recurring transaction scheduling and apply workflow
+
+### Analytics
+- Monthly trend analytics
+- Weekly trend analytics
+- Category-wise distribution
+- Forecast projection based on recent history
+- Spending anomaly insights
+
+### Trip Collaboration
+- Create and manage trips
+- Invite members by email
+- Generate invite links
+- Accept invite using tokenized invite flow
+- Split expenses (none/equal/custom)
+- Trip settlement balances across members
+- Role-aware member management (owner/cohost/member)
+
+## API Overview
+
+### Auth
+- POST /api/auth/register
+- POST /api/auth/login
+- POST /api/auth/request-otp
+- POST /api/auth/verify-otp
+- POST /api/auth/google
+- GET /api/auth/me
+
+### Profile
+- GET /api/profile
+- PUT /api/profile
+
+### Transactions
+- GET /api/transactions
+- POST /api/transactions
+- PUT /api/transactions/:id
+- DELETE /api/transactions/:id
+- POST /api/transactions/reset
+- GET /api/transactions/export
+- POST /api/transactions/import
+
+### Trips
+- GET /api/trips
+- POST /api/trips
+- GET /api/trips/:id
+- PUT /api/trips/:id
+- DELETE /api/trips/:id
+- POST /api/trips/:id/invite
+- POST /api/trips/:id/invite-link
+- POST /api/trips/accept-invite
+- GET /api/trips/:id/settle
+- DELETE /api/trips/:tripId/members/:memberId
+- PUT /api/trips/:tripId/members/:memberId/role
+
+### Analytics and Insights
+- GET /api/analytics/monthly
+- GET /api/analytics/weekly
+- GET /api/analytics/categories
+- GET /api/analytics/forecast
+- GET /api/insights/anomalies
+
+### Budgets and Recurring
+- GET /api/budgets
+- POST /api/budgets
+- GET /api/budgets/summary
+- GET /api/recurring
+- POST /api/recurring
+- POST /api/recurring/apply
+
+### Utility
+- GET /health
+
+## Environment Variables
+
+### Backend (.env)
+
+```env
+MONGO_URI=mongodb://127.0.0.1:27017/personal_finance_tracker
+JWT_SECRET=replace-with-strong-secret
+GMAIL_USER=your@gmail.com
+GMAIL_APP_PASSWORD=your_16_char_google_app_password
+GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+APP_URL=http://localhost:3000
+FRONTEND_PORT=3000
 ```
-frontend/.env:
-- REACT_APP_GOOGLE_CLIENT_ID=your-client-id
 
-backend/.env:
-- GOOGLE_CLIENT_ID=your-client-id
+### Frontend (.env)
+
+```env
+REACT_APP_API_BASE=http://localhost:5000
+REACT_APP_GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
 ```
 
----
+## Local Development Setup
 
-## 🚨 Common Issues
+## 1) Backend
 
-| Issue | Solution |
-|-------|----------|
-| OTP not arriving | Check spam folder, verify Gmail credentials |
-| "Backend not reachable" | Check `node server.js` is running |
-| Google button missing | Add REACT_APP_GOOGLE_CLIENT_ID to frontend/.env |
-| Can't verify OTP | Check code is correct, not expired (10 min limit) |
-
-See [COMPLETE_SETUP_INSTRUCTIONS.md](COMPLETE_SETUP_INSTRUCTIONS.md) for more troubleshooting.
-
----
-
-## 📊 Architecture
-
-```
-Frontend (React)
-    ↓
-    ├─ Register → Backend creates unverified user
-    ├─ Request OTP → Backend sends OTP email
-    ├─ Verify OTP → Backend marks verified
-    ├─ Login with password → Backend verifies
-    └─ Google Sign-In → Backend verifies Google token
-
-Backend (Express + MongoDB)
-    ├─ User Model (with isVerified field)
-    ├─ OtpCode Model (temp storage)
-    ├─ Auth Endpoints
-    │  ├─ register
-    │  ├─ verify-otp
-    │  ├─ login
-    │  ├─ request-otp
-    │  └─ google
-    └─ Email Service (via Gmail)
+```bash
+cd finpulse/backend
+npm install
+npm start
 ```
 
----
+Backend runs at http://localhost:5000.
 
-## 📈 Project Status
+## 2) Frontend
 
-- ✅ Email + Password Auth - Complete
-- ✅ Google OAuth - Complete
-- ✅ Backend endpoints - Complete
-- ✅ Frontend auth flow - Complete
-- ✅ Database schema - Complete
-- ✅ Documentation - Complete
+```bash
+cd finpulse/frontend
+npm install
+npm start
+```
 
----
+Frontend runs at http://localhost:3000.
 
-## 🎯 Next Steps (Optional)
+## 3) MongoDB
+- Start local MongoDB server OR use MongoDB Atlas URI in backend .env.
 
-After setup works, you can:
-1. Add password reset flow using OTP
-2. Add 2FA for login (additional OTP)
-3. Add social login (Facebook, GitHub, etc.)
-4. Add email/password change
-5. Add user profile picture upload
+## 4) Google OAuth Setup
+- Create OAuth 2.0 Client ID in Google Cloud Console
+- Add Authorized JavaScript Origins:
+  - http://localhost:3000
+  - your frontend production URL
+- Use the same Client ID in both backend and frontend env vars
 
----
+## Vercel Deployment
 
-## 📞 Support
+## Backend Project (Vercel)
+- Root directory: finpulse/backend
+- Required env vars: MONGO_URI, JWT_SECRET, GMAIL_USER, GMAIL_APP_PASSWORD, GOOGLE_CLIENT_ID, APP_URL, FRONTEND_URL (or APP_URL)
+- Keep MongoDB Atlas network access open to Vercel (for example 0.0.0.0/0 while testing)
 
-All documentation is in markdown files:
-- Questions about setup? → [COMPLETE_SETUP_INSTRUCTIONS.md](COMPLETE_SETUP_INSTRUCTIONS.md)
-- Questions about flows? → [AUTH_FLOWS_VISUAL.md](AUTH_FLOWS_VISUAL.md)
-- Questions about code? → [WHAT_WAS_DONE.md](WHAT_WAS_DONE.md)
-- Need full index? → [README_DOCUMENTATION_INDEX.md](README_DOCUMENTATION_INDEX.md)
+## Frontend Project (Vercel)
+- Root directory: finpulse/frontend
+- Required env vars: REACT_APP_API_BASE, REACT_APP_GOOGLE_CLIENT_ID
+- REACT_APP_API_BASE must point to backend Vercel URL
 
----
+## Important Deployment Notes
+- Frontend environment variables are build-time values, so redeploy frontend after changing them.
+- If Google login fails with audience/client mismatch, verify:
+  - backend GOOGLE_CLIENT_ID
+  - frontend REACT_APP_GOOGLE_CLIENT_ID
+  - Google OAuth authorized origins
+- If OTP fails, verify Gmail App Password and backend env values.
+- If database timeout appears, verify MONGO_URI and Atlas network access.
 
-## ✨ Summary
+## Security Notes
+- Never commit real secrets to git.
+- Use separate credentials for development and production.
+- Rotate credentials if accidentally exposed.
 
-Everything you asked for is implemented:
-1. ✅ Email + Password signup with OTP verification
-2. ✅ Google OAuth one-click login
-3. ✅ Complete documentation
-4. ✅ Production-ready code
+## Current Limitations
+- No automated test coverage is configured in backend.
+- Backend uses a single server.js file with many routes (can be modularized later).
 
-Just fill in Gmail credentials and run!
-
----
-
-**Ready to start?**
-
-1. Read [QUICK_START.md](QUICK_START.md) (3 min)
-2. Get Gmail app password (3 min)
-3. Fill `.env` files (2 min)
-4. Run `npm install` (5 min)
-5. Start servers and test (2 min)
-
-**Total: ~15 minutes to working auth system! 🚀**
-
----
-
-**Enjoy FinPulse!** 💰📊
+## Future Improvements
+- Add role-based access middleware per route group
+- Add validation layer (for example Joi/Zod)
+- Add centralized logging and monitoring
+- Split backend into controllers/services/routes
+- Add unit and integration tests
